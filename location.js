@@ -98,12 +98,12 @@
           }
         }
         $("#total").html("You have travelled " + formatThousands(distance, 2) + " kilometers total with your phone. That is " + formatThousands(distance*.621371, 2) + " miles.");
-        $("#drove").html("You have driven " + formatThousands(drove, 2) + " km total. (" + formatThousands(drove*.621371, 2) + " miles)")
-        $("#walked").html("You have walked " + formatThousands(walked, 2) + " km total. (" + formatThousands(walked*.621371, 2) + " miles)")
-        $("#ran").html("You have ran " + formatThousands(ran, 2) + " km total. (" + formatThousands(ran*.621371, 2) + " miles)")
-        $("#biked").html("You have biked " + formatThousands(biked, 2) + " km total. (" + formatThousands(biked*.621371, 2) + " miles)")
-        $("#flew").html("You have flown " + formatThousands(flew, 2) + " km total. (" + formatThousands(flew*.621371, 2) + " miles)")
-        $("#exit").html("You have parked a vehicle " + formatThousands(exited_vehicle, 2) + " times.")
+        $("#drove").html("You have driven " + formatThousands(drove, 2) + " km total. (" + formatThousands(drove*.621371, 2) + " miles)");
+        $("#walked").html("You have walked " + formatThousands(walked, 2) + " km total. (" + formatThousands(walked*.621371, 2) + " miles)");
+        $("#ran").html("You have ran " + formatThousands(ran, 2) + " km total. (" + formatThousands(ran*.621371, 2) + " miles)");
+        $("#biked").html("You have biked " + formatThousands(biked, 2) + " km total. (" + formatThousands(biked*.621371, 2) + " miles)");
+        $("#flew").html("You have flown " + formatThousands(flew, 2) + " km total. (" + formatThousands(flew*.621371, 2) + " miles)");
+        $("#exit").html("You have parked a vehicle " + formatThousands(exited_vehicle, 2) + " times.");
 
       }
       r.readAsText(f);
