@@ -1,7 +1,15 @@
   function readSingleFile(evt) {
     //Retrieve the first (and only!) File from the FileList object
     var f = evt.target.files[0]; 
+    
     var distance = 0;
+    var walked = 0;
+    var ran = 0;
+    var biked = 0;
+    var drove = 0;
+    var skiied = 0;
+    var exited_vehicle = 0;
+
     var prevLat;
     var prevLong;
     var prevHeight = 0;
@@ -10,12 +18,6 @@
       var r = new FileReader();
       r.onload = function(e) { 
 	      var contents = e.target.result;
-        $("#results").html("Loading...");
-        $("#data").html( "File " 
-              +"name: " + f.name + ", "
-              +"type: " + f.type + ", "
-              +"size: " + f.size + " bytes"
-        );  
         var parsed = JSON.parse(contents.replace(/\s+/g,"").replace(/(\r\n|\n|\r)/gm,""));
 
         for (var i = 0; i < parsed.locations.length; i++) {
@@ -23,6 +25,7 @@
             prevLong = parsed.locations[i].longitudeE7 * Math.pow(10, -7);
             prevLat = parsed.locations[i].latitudeE7 * Math.pow(10, -7);
             if (parsed.locations[i].height > -1) prevHeight = parsed.locations[i].altitude;
+
           }
           else{
             var longitude = parsed.locations[i].longitudeE7 * Math.pow(10, -7);
@@ -30,14 +33,75 @@
             var height = 0;
             if(parsed.locations[i].altitude > -1) height = parsed.locations[i].altitude;
             
-            distance += getDistance(prevLat, latitude, prevLong, longitude, prevHeight, height);
+            var current_distance = Math.abs(getDistance(prevLat, latitude, prevLong, longitude, prevHeight, height));
+
+            distance += current_distance;
+
+            //if contains activities section
+            if(typeof parsed.locations[i].activitys !== 'undefined') {
+              var transport = parsed.locations[i].activitys[0].activities[0].type;
+              switch(transport){
+                case 'onFoot':
+                  walked += current_distance;
+                  for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
+                    if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                  }
+                  break;
+                case 'unknown':
+                  walked += current_distance;
+                  for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
+                    if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                  }
+                  break;
+                case 'still':
+                  walked += current_distance;
+                  for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
+                    if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                  }
+                  break;
+                case 'walking':
+                  walked += current_distance;
+                  for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
+                    if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                  }
+                  break;
+                case 'running':
+                  ran += current_distance;
+                  break;
+                case 'inVehicle':
+                  for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
+                    if(parsed.locations[i].activitys[0].activities[c].type == 'onBicycle' && parsed.locations[i].activitys[0].activities[c].confidence > 40){
+                      biked += current_distance;
+                      break;
+                    } 
+                  }
+                  drove += current_distance;
+                  break;
+                case 'onBicycle':
+                  biked += current_distance;
+                  break;
+                case 'skiing':
+                  skiied += current_distance;
+                  break;
+                case 'exitingVehicle':
+                  exited_vehicle++;
+                  break;
+              }
+            }
 
             prevLong = longitude;
             prevLat = latitude;
             prevHeight = height;
           }
         }
-        $("#results").html("You have travelled " + formatThousands(distance, 2) + " kilometers total with your phone. That is " + formatThousands(distance*.621371, 2) + " miles.");
+        $("#total").html("You have travelled " + formatThousands(distance, 2) + " kilometers total with your phone. That is " + formatThousands(distance*.621371, 2) + " miles.");
+        $("#drove").html("You have driven " + formatThousands(drove, 2) + " km total. (" + formatThousands(drove*.621371, 2) + " miles)")
+        $("#walked").html("You have walked " + formatThousands(walked, 2) + " km total. (" + formatThousands(walked*.621371, 2) + " miles)")
+        $("#ran").html("You have ran " + formatThousands(ran, 2) + " km total. (" + formatThousands(ran*.621371, 2) + " miles)")
+        $("#biked").html("You have biked " + formatThousands(biked, 2) + " km total. (" + formatThousands(biked*.621371, 2) + " miles)")
+        $("#skiied").html("You have skiied " + formatThousands(skiied, 2) + " km total. (" + formatThousands(skiied*.621371, 2) + " miles)")
+        $("#exit").html("You have parked a vehicle " + formatThousands(exited_vehicle, 2) + " times.")
+
       }
       r.readAsText(f);
     } else { 
