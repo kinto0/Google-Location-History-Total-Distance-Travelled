@@ -7,8 +7,9 @@
     var ran = 0;
     var biked = 0;
     var drove = 0;
-    var skiied = 0;
+    var flew = 0;
     var exited_vehicle = 0;
+
 
     var prevLat;
     var prevLong;
@@ -37,9 +38,14 @@
 
             distance += current_distance;
 
+            if(current_distance > 1000){
+              flew += current_distance;
+            }
+
             //if contains activities section
             if(typeof parsed.locations[i].activitys !== 'undefined') {
               var transport = parsed.locations[i].activitys[0].activities[0].type;
+
               switch(transport){
                 case 'onFoot':
                   walked += current_distance;
@@ -80,9 +86,6 @@
                 case 'onBicycle':
                   biked += current_distance;
                   break;
-                case 'skiing':
-                  skiied += current_distance;
-                  break;
                 case 'exitingVehicle':
                   exited_vehicle++;
                   break;
@@ -99,7 +102,7 @@
         $("#walked").html("You have walked " + formatThousands(walked, 2) + " km total. (" + formatThousands(walked*.621371, 2) + " miles)")
         $("#ran").html("You have ran " + formatThousands(ran, 2) + " km total. (" + formatThousands(ran*.621371, 2) + " miles)")
         $("#biked").html("You have biked " + formatThousands(biked, 2) + " km total. (" + formatThousands(biked*.621371, 2) + " miles)")
-        $("#skiied").html("You have skiied " + formatThousands(skiied, 2) + " km total. (" + formatThousands(skiied*.621371, 2) + " miles)")
+        $("#flew").html("You have flown " + formatThousands(flew, 2) + " km total. (" + formatThousands(flew*.621371, 2) + " miles)")
         $("#exit").html("You have parked a vehicle " + formatThousands(exited_vehicle, 2) + " times.")
 
       }
