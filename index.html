@@ -1,41 +1,124 @@
 <!DOCTYPE html>
 
 <html>
+	
+	<head>
+		<title>Google Location History Distance</title>
 
-<head>
-<title>Google Location History Distance</title>
+     	<!--Import Google Icon Font-->
+    	<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    	<!--Import materialize.css-->
+    	<link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+
+    	<!-- clouds css -->
+    	<link type="text/css" rel="stylesheet" href="css/clouds.css" media="screen,projection"/>
+
+    	<!-- font awesome -->
+    	<link rel="stylesheet" href="./css/font-awesome.min.css">
+
+    	<!--Let browser know website is optimized for mobile-->
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		
+	</head>
+	
+	
+	<body >
+
+	<div class="container cover block">	
+	<br>
+	<h3 class="page-title">Google Location History Total Distance</h3>
+
+	<div class="row">
+    	<div class="col">
+    	  <div class="card blue-grey darken-1 hoverable">
+    	    <div class="card-content white-text">
+    	      <span class="card-title">Instructions</span>
+    	      <p class="flow-text">Download the JSON file from Google Location History (linked below) by clicking the gear in the bottom-right and clicking "download your data." Make sure it is in JSON format, then upload it below. Please note these are just estimates.</p>
+
+    	    </div>
+    	    <div class="card-action">
+    	      <a class="waves-effect card-action" href="https://www.google.com/maps/timeline?pb" target="_blank">GOOGLE LOCATION HISTORY</a>
+    	      <input class="waves-effect card-action" type="file" id="fileinput" ></a>
+    	    </div>
+    	  </div>
+    	</div>
+    </div>
+
+  <div class="center">
+  <div id="loader" class="preloader-wrapper small inactive">
+    <div class="spinner-layer spinner-green-only">
+      <div class="circle-clipper left">
+        <div class="circle center"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+  <a id="scroll-button" href="#total" class="activities waves-effect waves-light btn scale-transition scale-out">Scroll down</a>
+  </div>
+
+  </div>
+  <i class="fa fa-space-shuttle fa-5x fa-rotate-90" id="scroll-guy"></i>
+
+  <div id="total" class="activities blue block hidden">
+  	<div id="uv-div" class="component"></div>
+  	<h1 class="component text-right scale-transition scale-out" id="scrollfire1">You have travelled <u id="totalMiles" class="red-text">0</u> since <u id="firstDate" class="red-text">0</u></h1>
+  	<h2 class="component text-right scale-transition scale-out" style="top:50%" id="scrollfire2">That is an average of <u id="averageMiles" class="red-text">0</u> <br> miles a day</h1>
+  	<div id="clouds">
+		<div class="cloud x1"></div>
+		<!-- Time for multiple clouds to dance around -->
+		<div class="cloud x2"></div>
+		<div class="cloud x3"></div>
+		<div class="cloud x4"></div>
+		<div class="cloud x5"></div>
+	</div>
+  </div>
+  <div id="flying" class="activities blue block hidden">
+  	<div id="bottomCloud" class="component"></div>
+  	<h1 class="component text-right scale-transition scale-out" id="scrollfire3">You have flown <u id="planeTrips" class="red-text">0</u> times which has amounted to <u id="planeMiles" class="red-text">0</u> miles</h1>
+  </div>
+  <div id="driven" class="activities green block hidden">
+  	<div id="road" class="component"></div>
+  	<div id="road-sign" class="component">
+  		<h5 class="white-text" style="margin-left: 1rem; margin-right: 210px">TOTAL MILES DRIVEN <hr> <p id="milesDriven">0</p></h5>
+  	</div>
+  	<h1 class="component text-left scale-transition scale-out" id="scrollfire4">You have gotten into a car <u id="inCar" class="red-text">0</u> times</h1>
+    <h1 class="component text-right scale-transition scale-out" id="scrollfire5" style="top:50%">That is <u id="drivenEarth" class="red-text">0</u> times around <u class="red-text">the earth</u></h1>
+    <div id="bridge" class="component"></div>
+  </div>
+  <div id="onFoot" class="activities brown lighten-1 block hidden">
+  	<div id="path" class="component"></div>
+  	<h1 class="component text-left scale-transition scale-out" id="scrollfire6" style="top:25%">You have walked <u id="walked" class="red-text">0</u> miles</h1>
+  	<h1 class="component text-right scale-transition scale-out" id="scrollfire7" style="top:55%">You have ran <u id="ran" class="red-text">0</u> miles</h1>
+
+  </div>
 
 
-</head>
 
 
-<body>
-
-<p>Download the JSON file from Google Location History <a target="_blank" href="https://www.google.com/maps/timeline?pb"> here</a> by clicking the gear in the bottom-right and clicking "download your data." Make sure it is in JSON format, then upload it below. Please note these are just estimates.</p>
-
-<input type="file" id="fileinput" />
+				
 
 
-<p id="data"></p>
-<p id="results">
-	<p id="total"></p>
-	<p id="drove"></p>
-	<p id="walked"></p>
-	<p id="ran"></p>
-	<p id="biked"></p>
-	<p id="flew"></p>
-	<p id="exit"></p>
+	</body>
+	
+	<footer class="activities page-footer green hidden">
+		<div class="container">
+			<a href="https://locationhistoryvisualizer.com/heatmap/" class="waves-effect waves-light btn" style="margin-bottom:1rem">View heatmap</a>
+		</div>
+		<div class="footer-copyright">
+			<div class="container">
+			Created by Kyle Into using Materialize and Font Awesome
+			</div>
+		</div>
+	</footer>
+	<script src="./js/jquery-3.1.1.min.js"></script>
+	<script src="./js/location.js"></script>
+    <script type="text/javascript" src="./js/materialize.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+	<script type="text/javascript" src="./js/uvCharts.min.js"></script>
 
 
-</p>
-
-</div>
-
-
-</body>
-
-<footer>
-	<script src="jquery-3.1.1.min.js"></script>
-	<script src="location.js"></script>
-</footer>
 </html>
