@@ -260,9 +260,7 @@ function initScroll(actions){
       });
     });
 
-    console.log($(window).width());
     if($(window).width() < 2550) {
-      console.log("resized");
       $("#bridge").css({left : -(2560-$(window).width())/2});
     }
 }
