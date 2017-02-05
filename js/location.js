@@ -1,6 +1,5 @@
 window.onload = function(){
   document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
-
 };
 
 //reads file from file selector
@@ -14,15 +13,18 @@ function readSingleFile(evt) {
     if (f) {
       var r = new FileReader();
       r.onload = function(e) { 
-
-	      var contents = e.target.result;
-        var parsedContents = JSON.parse(contents.replace(/\s+/g,"").replace(/(\r\n|\n|\r)/gm,""));
-        
-        initScroll(getActivitiesDistance(parsedContents));
-
-
+        try{
+          var contents = e.target.result.replace(/\s+/g,"").replace(/(\r\n|\n|\r)/gm,"");
+          var parsedContents = JSON.parse(contents);
+          
+          initScroll(getActivitiesDistance(parsedContents));
+        }
+        catch (SyntaxError) { 
+          $("#loader").removeClass("active");
+          $("#loader").addClass("inactive");
+          alert("Error. File either exceeds 256 MB or is not .JSON.");
+        }
       }
-
       r.readAsText(f);
     } 
   }
