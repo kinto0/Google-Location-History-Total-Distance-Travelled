@@ -184,7 +184,7 @@ function initScroll(actions){
       },
       pie : {
         fontfamily : "roboto",
-        fontvariang : "normal"
+        fontvariant : "normal"
       }
 
     }
