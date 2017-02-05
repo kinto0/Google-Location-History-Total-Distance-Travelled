@@ -20,12 +20,10 @@
                 if (windowScroll > (elementOffset + offset)) {
                   if (value.done != true) {
                     downcallback();
-                    console.log("down " + windowScroll);
                     value.done = true;
                   }
                 } else if(windowScroll < (elementOffset + offset) && value.done) {
                     upcallback();
-                    console.log("up " + windowScroll);
                     value.done = false;
                 }
               }
