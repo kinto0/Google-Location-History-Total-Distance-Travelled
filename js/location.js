@@ -182,8 +182,9 @@ function initScroll(actions){
       label : {
         showlabel : true
       },
-      bar : {
-        fontfamily : "roboto"
+      pie : {
+        fontfamily : "roboto",
+        fontvariang : "normal"
       }
 
     }
