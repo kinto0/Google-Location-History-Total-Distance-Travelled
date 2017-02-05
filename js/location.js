@@ -16,7 +16,7 @@ function readSingleFile(evt) {
       r.onload = function(e) { 
 
 	      var contents = e.target.result;
-        var parsedContents = $.parseJSON(contents.replace(/\s+/g,"").replace(/(\r\n|\n|\r)/gm,""));
+        var parsedContents = JSON.parse(contents.replace(/\s+/g,"").replace(/(\r\n|\n|\r)/gm,""));
         
         initScroll(getActivitiesDistance(parsedContents));
 
