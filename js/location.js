@@ -164,6 +164,9 @@ function initScroll(actions){
 
 
     var config = {
+      meta : {
+        caption : "Distance (km)"
+      },
       graph : {
         bgcolor : "none"
       },
