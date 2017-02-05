@@ -22,7 +22,9 @@ function readSingleFile(evt) {
         catch (SyntaxError) { 
           $("#loader").removeClass("active");
           $("#loader").addClass("inactive");
-          alert("Error. File either exceeds 256 MB or is not .JSON.");
+          Materialize.toast("Error reading JSON. File either exceeds 256 MB or is not .JSON.", 10000);
+          $("#card-text").html("<p class='flow-text'>File either exceeds 256 MB or is not a .JSON. please make sure you have selected the .JSON file, not the .zip. If you have, please click <a href='https://stedolan.github.io/jq/'>here</a> to download a program that can trim your JSON down to 256 mb or less. Use the command:</p><br><p>jq -c . LocationHistory.json > LocationHistory.compact.json</p>");
+          $("#card-title").text("Uh oh!");
         }
       }
       r.readAsText(f);
