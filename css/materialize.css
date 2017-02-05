@@ -40,7 +40,7 @@
 
 #scroll-guy{
   position: fixed;
-    top: 70%;
+    bottom:300px;
     z-index: 2;
     left:49%;
 }

@@ -193,7 +193,7 @@ function initScroll(actions){
 
     var chart = uv.chart('Pie', graphdef, config);
 
-    var options = [
+    var options_scrollfire = [
       {selector: '#scrollfire1', offset: 200, callback: function() {
         $("#scrollfire1").removeClass("scale-out");
      } },      
@@ -215,22 +215,37 @@ function initScroll(actions){
       {selector: '#scrollfire7', offset: 200, callback: function() {
         $("#scrollfire7").removeClass("scale-out");
      } },
-     {selector: '#flying', offset: 200, callback: function() {
-        $("#scroll-guy").addClass("fa-space-shuttle");        
-        $("#scroll-guy").addClass("fa-rotate-90");
-        $("#scroll-guy").removeClass("fa-car")
-     } },
-     {selector: '#driven', offset: 200, callback: function() {
+    ];
+    Materialize.scrollFire(options_scrollfire);
+
+    var options_enhancedScroll = [
+     // {selector: '#flying', offset: 200, downScrollCallback: function() {
+     //    $("#scroll-guy").addClass("fa-car");
+     //    $("#scroll-guy").removeClass("fa-space-shuttle")
+     //    $("#scroll-guy").removeClass("fa-rotate-90")
+     // }, upScrollCallback : function(){
+     //    $("#scroll-guy").addClass("fa-space-shuttle");        
+     //    $("#scroll-guy").addClass("fa-rotate-90");
+     //    $("#scroll-guy").removeClass("fa-car")
+     // } },
+     {selector: '#driven', offset: 300, downScrollCallback : function() {
         $("#scroll-guy").removeClass("fa-space-shuttle");        
         $("#scroll-guy").removeClass("fa-rotate-90");
         $("#scroll-guy").addClass("fa-car")
+     }, upScrollCallback : function(){
+        $("#scroll-guy").addClass("fa-space-shuttle");        
+        $("#scroll-guy").addClass("fa-rotate-90");
+        $("#scroll-guy").removeClass("fa-car");
      } },
-     {selector: '#onFoot', offset: 200, callback: function() {
+     {selector: '#onFoot', offset: 300, downScrollCallback: function() {
         $("#scroll-guy").removeClass("fa-car");        
-        $("#scroll-guy").addClass("fa-male")
+        $("#scroll-guy").addClass("fa-male");
+     }, upScrollCallback : function(){
+        $("#scroll-guy").removeClass("fa-male");        
+        $("#scroll-guy").addClass("fa-car");
      } },
-    ];
-    Materialize.scrollFire(options);
+     ];
+     Materialize.scrollFireEnhanced(options_enhancedScroll);
 
     $("#totalMiles").text(formatThousands(actions.total*0.621371, 2) + " miles");
     $("#firstDate").text(actions.date.getMonth() + "/" + actions.date.getDate() + '/' + actions.date.getFullYear());
@@ -259,10 +274,10 @@ function initScroll(actions){
         }
       });
     });
-
-    if($(window).width() < 2550) {
+    $("#bridge").css({left : -(2560-$(window).width())/2});
+    $(window).on('resize', function(){
       $("#bridge").css({left : -(2560-$(window).width())/2});
-    }
+    })
 }
 
 //gets number of days since argument
