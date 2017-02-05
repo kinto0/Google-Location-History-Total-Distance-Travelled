@@ -164,6 +164,9 @@ function initScroll(actions){
 
 
     var config = {
+      caption : {
+        fontfamily : "Roboto"
+      },
       meta : {
         caption : "Distance (km)"
       },
