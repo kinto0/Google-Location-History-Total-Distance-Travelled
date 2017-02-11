@@ -36,9 +36,9 @@ function getActivitiesDistance(parsed){
     var distance = 0;
     var walked = 0;
     var ran = 0;
-    var biked = 0;
     var drove = 0;
     var flew = 0;
+    var biked = 0;
     var exited_vehicle = 0;
     var first_date;
     var plane_flights = 0;
@@ -64,8 +64,6 @@ function getActivitiesDistance(parsed){
         
         var current_distance = Math.abs(getDistance(prevLat, latitude, prevLong, longitude));
 
-        distance += current_distance;
-
         //since phone will be in airplane mode in the air if phone has been disconnected for > 1000 miles we assume they were on a plane
         if(current_distance > 1000){
           flew += current_distance;
@@ -78,27 +76,27 @@ function getActivitiesDistance(parsed){
 
           switch(transport){
             case 'onFoot':
-              walked += current_distance;
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
               }
               break;
             case 'unknown':
-              walked += current_distance;
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
               }
               break;
             case 'still':
-              walked += current_distance;
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
               }
               break;
             case 'walking':
-              walked += current_distance;
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
               }
               break;
             case 'running':
@@ -126,6 +124,9 @@ function getActivitiesDistance(parsed){
         prevLat = latitude;
       }
     }
+
+    distance = walked+ran+drove+flew+biked;
+
 
     var activitiesObject = {total:distance, driven:drove, walked:walked, ran:ran, biked:biked, flew:flew, exit:exited_vehicle, date:first_date, flights:plane_flights};
 
@@ -198,6 +199,7 @@ function initScroll(actions){
                 { name : 'Walked', value : actions.walked },
                 { name : 'Flown', value : actions.flew },
                 { name : 'Ran', value : actions.ran },
+                { name : 'Biked', value : actions.biked },
             ]
         }
     };
@@ -225,6 +227,9 @@ function initScroll(actions){
      } },
       {selector: '#scrollfire7', offset: 200, callback: function() {
         $("#scrollfire7").removeClass("scale-out");
+     } },
+      {selector: '#scrollfire8', offset: 200, callback: function() {
+        $("#scrollfire8").removeClass("scale-out");
      } },
     ];
     Materialize.scrollFire(options_scrollfire);
@@ -268,6 +273,7 @@ function initScroll(actions){
     $("#drivenEarth").text(formatThousands(actions.driven*.621371/24901, 2));
     $("#walked").text(formatThousands(actions.walked*.621371, 2));
     $("#ran").text(formatThousands(actions.ran*.621371, 2));
+    $("#biked").text(formatThousands(actions.biked*.621371, 2));
 
 
     //smooth scrolling init
