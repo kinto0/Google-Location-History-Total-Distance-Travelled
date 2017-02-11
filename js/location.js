@@ -169,7 +169,7 @@ function initScroll(actions){
         fontfamily : "Roboto"
       },
       meta : {
-        caption : "Distance (km)"
+        caption : "Distance (miles)"
       },
       graph : {
         bgcolor : "none"
@@ -195,11 +195,11 @@ function initScroll(actions){
         dataset : {
             'f ' : [
                 // { name : 'Total Distance', value : actions.total },
-                { name : 'Driven', value : actions.driven },
-                { name : 'Walked', value : actions.walked },
-                { name : 'Flown', value : actions.flew },
-                { name : 'Ran', value : actions.ran },
-                { name : 'Biked', value : actions.biked },
+                { name : 'Driven', value : actions.driven*0.621371 },
+                { name : 'Walked', value : actions.walked*0.621371 },
+                { name : 'Flown', value : actions.flew*0.621371 },
+                { name : 'Ran', value : actions.ran*0.621371 },
+                { name : 'Biked', value : actions.biked*0.621371 },
             ]
         }
     };
