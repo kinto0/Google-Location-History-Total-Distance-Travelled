@@ -78,25 +78,25 @@ function getActivitiesDistance(parsed){
             case 'onFoot':
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
               }
               break;
             case 'unknown':
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
               }
               break;
             case 'still':
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
               }
               break;
             case 'walking':
               for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
                 if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 30) walked += current_distance;
+                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
               }
               break;
             case 'running':
