@@ -3,3 +3,6 @@ This program counts total distance travelled in km and miles with google locatio
 
 # How it works
 It does all the processing in your browser; nothing is sent to a server anywhere to track you. It takes in the JSON with Google's location history and using some magic it converts it all to distances. The activities object inside the JSON tracks what activities are being done, so it adds those into the equation too. 
+
+# If there is an error
+If your JSON file is >256 MB, try using Microsoft Edge or Safari as a browser
