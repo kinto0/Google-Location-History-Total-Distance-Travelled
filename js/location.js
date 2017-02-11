@@ -191,9 +191,9 @@ function initScroll(actions){
     }
 
     var graphdef = {
-        categories : ['f '],
+        categories : ['Distance '],
         dataset : {
-            'f ' : [
+            'Distance ' : [
                 // { name : 'Total Distance', value : actions.total },
                 { name : 'Driven', value : actions.driven*0.621371 },
                 { name : 'Walked', value : actions.walked*0.621371 },
