@@ -46,6 +46,7 @@ function getActivitiesDistance(parsed){
 
     var prevLat = 0;
     var prevLong = 0;
+    var prevHeight = 0;
 
 
 
@@ -53,7 +54,7 @@ function getActivitiesDistance(parsed){
       if(i == parsed.locations.length - 1){
         prevLong = parsed.locations[i].longitudeE7 * Math.pow(10, -7);
         prevLat = parsed.locations[i].latitudeE7 * Math.pow(10, -7);
-        
+        prevHeight = parsed.locations[i].altitude;
         var first_date = new Date(parseFloat(parsed.locations[i].timestampMs));  
 
 
@@ -61,8 +62,10 @@ function getActivitiesDistance(parsed){
       else{
         var longitude = parsed.locations[i].longitudeE7 * Math.pow(10, -7);
         var latitude = parsed.locations[i].latitudeE7 * Math.pow(10, -7);
-        
-        var current_distance = Math.abs(getDistance(prevLat, latitude, prevLong, longitude));
+        var height = parsed.locations[i].altitude;
+
+
+        var current_distance = Math.abs(getDistance(prevLat, latitude, prevLong, longitude, prevHeight, height));
 
         //since phone will be in airplane mode in the air if phone has been disconnected for > 1000 miles we assume they were on a plane
         if(current_distance > 1000){
@@ -71,62 +74,89 @@ function getActivitiesDistance(parsed){
         }
 
         //if contains activities section
-        if(typeof parsed.locations[i].activitys !== 'undefined') {
-          var transport = parsed.locations[i].activitys[0].activities[0].type;
+        if(typeof parsed.locations[i].activity !== 'undefined') {
+          var transport = parsed.locations[i].activity[0].activity[0].type;
 
           switch(transport){
-            case 'onFoot':
-              for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
-                if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
+            case 'ON_FOOT':
+              for (var c = 0; c < parsed.locations[i].activity[0].activity.length; c++) {
+                if(parsed.locations[i].activity[0].activity[c].type == 'RUNNING' && parsed.locations[i].activity[0].activity[c].confidence > 15){
+                   ran += current_distance;
+                   break;
+                }
+                if(parsed.locations[i].activity[0].activity[c].type == 'WALKING' && parsed.locations[i].activity[0].activity[c].confidence > 20){
+                  walked += current_distance;
+                  break;
+                }
               }
               break;
-            case 'unknown':
-              for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
-                if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
+            case 'UNKNOWN':
+              for (var c = 0; c < parsed.locations[i].activity[0].activity.length; c++) {
+                if(parsed.locations[i].activity[0].activity[c].type == 'RUNNING' && parsed.locations[i].activity[0].activity[c].confidence > 15){
+                   ran += current_distance;
+                   break;
+                }
+                if(parsed.locations[i].activity[0].activity[c].type == 'WALKING' && parsed.locations[i].activity[0].activity[c].confidence > 20){
+                  walked += current_distance;
+                  break;
+                }
               }
               break;
-            case 'still':
-              for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
-                if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
+            case 'STILL':
+              for (var c = 0; c < parsed.locations[i].activity[0].activity.length; c++) {
+                if(parsed.locations[i].activity[0].activity[c].type == 'RUNNING' && parsed.locations[i].activity[0].activity[c].confidence > 15){
+                   ran += current_distance;
+                   break;
+                }
+                if(parsed.locations[i].activity[0].activity[c].type == 'WALKING' && parsed.locations[i].activity[0].activity[c].confidence > 20){
+                  walked += current_distance;
+                  break;
+                }
               }
               break;
-            case 'walking':
-              for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
-                if(parsed.locations[i].activitys[0].activities[c].type == 'running' && parsed.locations[i].activitys[0].activities[c].confidence > 15) ran += current_distance;
-                if(parsed.locations[i].activitys[0].activities[c].type == 'walking' && parsed.locations[i].activitys[0].activities[c].confidence > 20) walked += current_distance;
+            case 'WALKING':
+              for (var c = 0; c < parsed.locations[i].activity[0].activity.length; c++) {
+                if(parsed.locations[i].activity[0].activity[c].type == 'RUNNING' && parsed.locations[i].activity[0].activity[c].confidence > 15){
+                   ran += current_distance;
+                   break;
+                }
+                if(parsed.locations[i].activity[0].activity[c].type == 'WALKING' && parsed.locations[i].activity[0].activity[c].confidence > 20){
+                  walked += current_distance;
+                  break;
+                }
               }
               break;
-            case 'running':
+            case 'RUNNING':
               ran += current_distance;
               break;
-            case 'inVehicle':
-              for (var c = 0; c < parsed.locations[i].activitys[0].activities.length; c++) {
-                if(parsed.locations[i].activitys[0].activities[c].type == 'onBicycle' && parsed.locations[i].activitys[0].activities[c].confidence > 40){
+            case 'IN_VEHICLE':
+              for (var c = 0; c < parsed.locations[i].activity[0].activity.length; c++) {
+                if(parsed.locations[i].activity[0].activity[c].type == 'ON_BICYCLE' && parsed.locations[i].activity[0].activity[c].confidence > 40){
                   biked += current_distance;
                   break;
                 } 
               }
               drove += current_distance;
               break;
-            case 'onBicycle':
+            case 'ON_BICYCLE':
               biked += current_distance;
               break;
-            case 'exitingVehicle':
+            case 'EXITING_VEHICLE':
               exited_vehicle++;
               break;
           }
         }
+        if(current_distance>0){
+           prevLong = longitude;
+           prevLat = latitude;
+           prevHeight = height;
+        }
 
-        prevLong = longitude;
-        prevLat = latitude;
       }
     }
 
     distance = walked+ran+drove+flew+biked;
-
+    console.log(distance);
 
     var activitiesObject = {total:distance, driven:drove, walked:walked, ran:ran, biked:biked, flew:flew, exit:exited_vehicle, date:first_date, flights:plane_flights};
 
@@ -137,7 +167,12 @@ function getActivitiesDistance(parsed){
 }
 
 //returns distance in km from latitude and longitude
-function getDistance(lat1, lat2, long1, long2){
+function getDistance(lat1, lat2, long1, long2, height1, height2){
+
+  //sometimes height is not given so we will set both to 0 if one is 0
+  if(typeof height1 == 'undefined' || typeof height2 == 'undefined'){
+    height1 = height2 = 0;
+  }
 
   //radius of the earth (meters)
   var r = 6371;
@@ -150,12 +185,10 @@ function getDistance(lat1, lat2, long1, long2){
   var a = Math.sin(latDistance/2)*Math.sin(latDistance/2) + Math.cos(latitude1)*Math.cos(latitude2) * Math.sin(lonDistance/2) * Math.sin(lonDistance/2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-  return r*c;
-
-  // //the 0 on the right should be height2-height1 but it creates a lot of error and was removed
-  // distance = Math.pow(distance, 2) + Math.pow((0), 2);
-
-  // return Math.sqrt(distance);
+  // //if height is available we will get height as well (pythagoras' theorum)
+  var x = Math.pow(r*c, 2) + Math.pow((height2-height1)/1000, 2);
+  var totalDistance = Math.sqrt(x);
+  return totalDistance;
 }
 
 //initiates scrolling webpage for displaying distance of actions
@@ -203,8 +236,8 @@ function initScroll(actions){
             ]
         }
     };
-
-    var chart = uv.chart('Pie', graphdef, config);
+    //change this eventually
+    // var chart = uv.chart('Pie', graphdef, config);
 
     var options_scrollfire = [
       {selector: '#scrollfire1', offset: 200, callback: function() {
