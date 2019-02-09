@@ -14,10 +14,6 @@ class JsonStream {
         class ReadStream extends Readable {
             constructor(options) {
                 super(options);
-                console.log('constructor')
-
-                let arrayStartDepth;
-                let arrayEndDepth;
 
                 let arrayDepth = 0;
                 let objectDepth = 0;
@@ -26,13 +22,11 @@ class JsonStream {
                 let objectstack = [];
 
                 let currentKey;
-                //
+
                 clarinetstream.on('openarray', () => {
                     arrayDepth++;
-                    // console.log('openarray, depth', arrayDepth);
 
                     if (arrayDepth + objectDepth > cutoff) {
-                        // console.log('pushing new array');
                         const newArray = [];
                         arraystack.push(newArray);
 
@@ -46,13 +40,11 @@ class JsonStream {
 
                 clarinetstream.on('openobject', function(firstKey) {
                     objectDepth++;
-                    // console.log('openobject, depth', objectDepth);
 
                     if (arrayDepth + objectDepth > cutoff) {
-                        // console.log('pushing new object');
                         const newObject = {};
 
-                        // Object is value of an object key
+                        // Object is the value of an object key
                         if (currentKey) {
                             objectstack[objectstack.length - 1][currentKey] = newObject;
                         }
@@ -73,31 +65,20 @@ class JsonStream {
 
                     const closedArray = arraystack.pop();
 
-                    // Are we at the root - cutoff?
+                    // Are we at the new root?
                     if (arrayDepth + objectDepth === cutoff) {
-
-                        // if ((arraystack.length + objectstack.length) === minDepth) {
-                            console.log('emitting array', closedArray);
-                            this.push(closedArray)
-                        // }
+                        this.push(closedArray)
                     }
-
-                    // console.log('closearray, arrayDepth', arrayDepth);
                 });
 
                 clarinetstream.on('closeobject', () => {
                     objectDepth--;
-                    // console.log('closedobject, depth:, cutoff', objectDepth, cutoff);
 
                     const closedObject = objectstack.pop()
 
-                    // Are we at the root - cutoff
+                    // Are we at the new root?
                     if (objectDepth + arrayDepth === cutoff) {
-                    // if (((arraystack.length + objectstack.length) - minDepth) === minDepth) {
-                        // if ((arraystack.length + objectstack.length) === minDepth) {
-                            // console.log('emitting object', closedObject);
-                            this.push(closedObject);
-                        // }
+                        this.push(closedObject);
                     }
                 });
 
@@ -105,12 +86,11 @@ class JsonStream {
                     if (arrayDepth + objectDepth > cutoff) {
 
                         if (!currentKey)
-                        throw Error(`No currentKey ${currentKey}`);
+                            throw Error(`No currentKey ${currentKey}`);
 
                         objectstack[objectstack.length - 1][currentKey] = value;
                         currentKey = null;
                     }
-                    // console.log("Value: " + value);
                 });
 
                 clarinetstream.on('key', (key) => {
@@ -118,19 +98,15 @@ class JsonStream {
 
                         currentKey = key;
                     }
-                    // console.log("Key: " + key);
                 });
 
                 clarinetstream.on('end', () => {
                     this.push(null);
                 });
 
-                // console.log('pipe', file);
-
                 fileReaderStream(file, { chunkSize: 1024 * 1024 * 5 })
                 .pipe(transform)
                 .pipe(clarinetstream)
-                // .pipe(writeable);
             }
             _read(size) {
 
