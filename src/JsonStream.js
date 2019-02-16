@@ -1,17 +1,18 @@
-// const log = require('debug-level').log('JsonStream');
 const Debug = require('debug-level');
 const debug = new Debug('JsonStream');
 
 const fileReaderStream = require('filereader-stream');
-const drop = require('drag-and-drop-files');
 
-const { Writable, Transform, Readable } = require('readable-stream');
+const { Transform, Readable } = require('readable-stream');
 
-const clarinetstream = require("clarinet").createStream();
+const jsonParser = require('clarinet').createStream();
+
+let filesize = 0;
+let chunkNumber = 0;
 
 class JsonStream {
-    static createReadStream(file, cutoff) {
-        class ReadStream extends Readable {
+    static createReadStream(file, cutoff, { chunkSize = 2 * 1024 * 1024 } = {}) {
+        class JsonReadStream extends Readable {
             constructor(options) {
                 super(options);
 
@@ -23,7 +24,7 @@ class JsonStream {
 
                 let currentKey;
 
-                clarinetstream.on('openarray', () => {
+                jsonParser.on('openarray', () => {
                     arrayDepth++;
 
                     if (arrayDepth + objectDepth > cutoff) {
@@ -38,7 +39,7 @@ class JsonStream {
                     }
                 });
 
-                clarinetstream.on('openobject', function(firstKey) {
+                jsonParser.on('openobject', function(firstKey) {
                     objectDepth++;
 
                     if (arrayDepth + objectDepth > cutoff) {
@@ -60,29 +61,29 @@ class JsonStream {
                     }
                 });
 
-                clarinetstream.on('closearray', () => {
+                jsonParser.on('closearray', () => {
                     arrayDepth--;
 
                     const closedArray = arraystack.pop();
 
-                    // Are we at the new root?
+                    // Are we at the root set by the cutoff?
                     if (arrayDepth + objectDepth === cutoff) {
                         this.push(closedArray)
                     }
                 });
 
-                clarinetstream.on('closeobject', () => {
+                jsonParser.on('closeobject', () => {
                     objectDepth--;
 
                     const closedObject = objectstack.pop()
 
-                    // Are we at the new root?
+                    // Are we at the root set by the cutoff?
                     if (objectDepth + arrayDepth === cutoff) {
                         this.push(closedObject);
                     }
                 });
 
-                clarinetstream.on('value', (value) => {
+                jsonParser.on('value', (value) => {
                     if (arrayDepth + objectDepth > cutoff) {
 
                         if (!currentKey)
@@ -93,63 +94,44 @@ class JsonStream {
                     }
                 });
 
-                clarinetstream.on('key', (key) => {
+                jsonParser.on('key', (key) => {
                     if (arrayDepth + objectDepth > cutoff) {
-
                         currentKey = key;
                     }
                 });
 
-                clarinetstream.on('end', () => {
+                jsonParser.on('end', () => {
                     this.push(null);
                 });
 
-                fileReaderStream(file, { chunkSize: 1024 * 1024 * 5 })
-                .pipe(transform)
-                .pipe(clarinetstream)
+                // Pass on progress information events
+                progressCounter.on('progress', progress => {
+                    this.emit('progress', progress);
+                });
+
+                filesize = file.size;
+
+                fileReaderStream(file, { chunkSize })
+                    .pipe(progressCounter)
+                    .pipe(jsonParser)
             }
             _read(size) {
-
             }
         }
 
-        return new ReadStream({ objectMode: true });
+        const progressCounter = new Transform({
+            transform(data, encoding, cb) {
+                chunkNumber++;
+                const percentage = Math.round((chunkNumber * chunkSize / filesize * 100) * 100) / 100;
+
+                this.emit('progress', { percentage });
+
+                cb(null, data);
+            }
+        });
+
+        return new JsonReadStream({ objectMode: true });
     }
 }
-
-let chunkNumber = 0;
-const transform = new Transform({
-    transform(data, encoding, cb) {
-        chunkNumber++
-
-        console.log('Processing chunk, no, MB:', chunkNumber, chunkNumber * 5, 'MB');
-
-        // data = data.toString();
-        // console.log('data transform2', typeof data);
-        cb(null, data);
-    }
-});
-
-const writeable = new Writable({
-  write(chunk, encoding, callback) {
-    console.log('typeof chunk', typeof chunk);
-    // console.log('encoding, chunk', encoding, chunk);
-    console.log('chunk', chunk);
-    callback();
-  },
-  writev(chunks, callback) {
-    // ...
-    console.log('writeev', chunk);
-    },
-    destory(err, cb) {
-        console.log('destory, err:', err);
-        cb();
-    },
-    final(cb) {
-        console.log('closing stream');
-        cb();
-    }
-});
-
 
 module.exports = JsonStream;

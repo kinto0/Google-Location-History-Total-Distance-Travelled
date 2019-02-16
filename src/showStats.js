@@ -1,7 +1,10 @@
 
 //initiates scrolling webpage for displaying distance of travels
 function showStats(travels) {
+    $("#loader").addClass("hide");
+
     $("#scroll-button").removeClass("scale-out");
+    $("#scroll-button").removeClass("hide");
     $(".activities").show();
 
     var config = {
@@ -108,6 +111,7 @@ function showStats(travels) {
             }
         }
     ];
+    console.log('scrollfile')
     Materialize.scrollFire(options_scrollfire);
 
     var options_enhancedScroll = [
